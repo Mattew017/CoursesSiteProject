@@ -1,0 +1,12 @@
+{% extends "courses/index.html" %}
+{% block content %}
+<h1>Редактирование курса</h1>
+<form id="add_form"  method="post" action="">
+  {% csrf_token %}
+  {{ form }}
+  <div class="mt-5">
+      <button form="add_form" type="submit" class="btn btn-primary">Сохранить</button>
+  </div>
+</form>
+
+{% endblock content %}

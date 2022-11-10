@@ -1,0 +1,81 @@
+{% extends "courses/index.html" %}
+{% block content %}
+<h1 class="text-center">Управление курсами</h1>
+<div class="mt-4 mb-4 text-center">
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-success btn-lg" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Добавить новый курс
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form id="add_form" action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button form="add_form" type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Название</th>
+      <th scope="col">Автор</th>
+      <th scope="col">Описание</th>
+      <th scope="col">Редактирование</th>
+      <th scope="col">Удаление</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for course in page_obj %}
+    <tr>
+      <th scope="row">{{course.id}}</th>
+      <td>{{course.title}}</td>
+      <td>{{course.author}}</td>
+      <td>{{course.description}}</td>
+      <td><a class="btn btn-primary" href="{% url 'update_page' course.pk %}">Редактировать</a></td>
+      <td><a class="btn btn-danger" href="{% url 'delete_page' course.pk %}">Удалить</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
+    {% block footer %}
+    {% if page_obj.has_other_pages %}
+          <nav aria-label="...">
+      <ul class="pagination pagination-lg justify-content-center">
+          {% if  page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Назад</a>
+        </li>
+          {% endif %}
+        {% for p in page_obj.paginator.page_range %}
+        {% if p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+        <li class="page-item"><a class="page-link {% if page_obj.number == p %}active{% endif %}" href="?page={{p}}">{{p}}</a></li>
+        {% endif %}
+        {% endfor %}
+        <li class="page-item">
+          {% if  page_obj.has_next %}
+          <a class="page-link" href="?page={{page_obj.next_page_number}}">Вперёд</a>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+    {% endblock footer %}
+

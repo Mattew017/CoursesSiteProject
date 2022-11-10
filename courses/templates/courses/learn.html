@@ -1,0 +1,17 @@
+{% extends "courses/index.html" %}
+{% block content %}
+    <h1>Моё обучение</h1>
+
+        {% for course in object_list  %}
+        {% if course in  user.profile.courses.all %}
+        <div class="card mb-3 mt-3" style="max-width: 25rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ course.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ course.author }}</h6>
+                <a href="{% url 'course-detail' course.pk %}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+{% endblock content %}

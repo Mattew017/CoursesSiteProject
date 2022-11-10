@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Курсы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <ul class="navbar-nav me-auto">
+                {% if user.is_superuser %}
+                    <li class="nav-item">
+                        {% url 'control' as url_control %}
+                        <a class="nav-link{% if url_control == request.path %} active {% endif %}" href={{url_control}}>Управление курсами</a>
+                    </li>
+                {% else %}
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        {% url 'catalog' as url_catalog %}
+                        <a class="nav-link{% if url_catalog == request.path %} active {% endif %}" href={{url_catalog}}>Каталог</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'learn' as url_learn %}
+                        <a class="nav-link{% if url_learn == request.path %} active {% endif %}" href={{url_learn}}>Моё обучение</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        {% url 'catalog' as url_catalog %}
+                        <a class="nav-link{% if url_catalog == request.path %} active {% endif %}" href={{url_catalog}}>Каталог</a>
+                    </li>
+                {% endif %}
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link disabled" style="color: white;" href="#"> Добро пожаловать, {{ request.user }} </a>
+                </li>
+                <li class="nav-item">
+                    <a class=" btn nav-link btn-warning ml-5 text-dark link-dark" href="{% url 'logout' %}"> Выйти </a>
+                </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}"> Войти </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}"> Регистрация </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    {% block content %}
+        <h1 class="text-center">Образовательная платформа Courses</h1>
+        {% if user.is_superuser %}
+        <h2 class="text-center">Вы зашли как администратор</h2>
+        <h3 class="text-center"><a href="{% url 'control'%}" class="btn  btn-outline-primary btn-lg"> Перейти в управление курсами</a></h3>
+        {% else %}
+        <h2 class="text-center">Добро пожаловать!</h2>
+        <h3 class="text-center"><a href="{% url 'catalog'%}" class="btn  btn-outline-primary btn-lg"> Перейти в каталог</a></h3>
+        {% endif %}
+    {% endblock content %}
+
+    {% block footer %}
+    {% if page_obj.has_other_pages %}
+          <nav aria-label="...">
+      <ul class="pagination pagination-lg justify-content-center">
+          {% if  page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Назад</a>
+        </li>
+          {% endif %}
+        {% for p in paginator.page_range %}
+        {% if p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+        <li class="page-item"><a class="page-link {% if page_obj.number == p %}active{% endif %}" href="?page={{p}}">{{p}}</a></li>
+        {% endif %}
+        {% endfor %}
+        <li class="page-item">
+          {% if  page_obj.has_next %}
+          <a class="page-link" href="?page={{page_obj.next_page_number}}">Вперёд</a>
+          {% endif %}
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+    {% endblock footer %}
+
+
+  </body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>

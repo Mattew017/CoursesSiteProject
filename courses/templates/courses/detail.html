@@ -1,0 +1,19 @@
+{% extends "courses/index.html" %}
+{% block content %}
+    <div class="card ml-5">
+      <div class="card-body">
+        <h5 class="card-title">{{ object.title }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ object.author }}</h6>
+        <p class="card-text"> {{ object.description }}</p>
+          {% if request.user.is_authenticated %}
+            {% if course in  user.profile.courses.all %}
+            <p class="text-success">Вы записаны</p>
+            <a href="{% url 'unsubscribe' course.pk %}" class="card-link btn btn-primary">Отписаться</a>
+            {% else %}
+            <a href="{% url 'subscribe' course.pk %}" class="card-link btn btn-primary">Записаться</a>
+            {% endif %}
+          </div>
+          {% endif %}
+
+    </div>
+{% endblock content %}
