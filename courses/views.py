@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
@@ -64,13 +65,13 @@ def delete_page(request, pk):
 
 class AllCoursesView(ListView):
     model = Course
-    paginate_by = 5
+    paginate_by = 3
     template_name = "courses/catalog.html"
 
 
 class LearnCoursesView(ListView):
     model = Course
-    paginate_by = 15
+    paginate_by = 10
     template_name = "courses/learn.html"
 
 
@@ -95,6 +96,11 @@ class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = "courses/register.html"
     success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index')
 
 
 class LoginUser(LoginView):
